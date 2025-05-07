@@ -5,6 +5,7 @@ use App\Models\User; // Import the User model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -20,20 +21,23 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
-//        Log::info("User ID received", ['id' => $request]);
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,',
-        ]);
-
-        // Get the authenticated user
+        // get the authenticated user (should match $id)
         $user = $request->user();
-        Log::info($request->user());
-        // Update user data
-        $user->update($request->only(['name', 'last_name', 'email']));
-
+    
+        $data = $request->validate([
+            'name'      => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email'     => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+        ]);
+    
+        $user->update($data);
+    
         return response()->json($user, 200);
     }
 

@@ -10,7 +10,15 @@ class WorkerController extends Controller {
         $workers = Worker::where('store_id', $request->store_id)->get();
         return response()->json($workers);
     }
-
+    public function show(Worker $worker)
+    {
+        // Verify the worker belongs to the same store as the authenticated user
+        if ($worker->store_id !== auth()->user()->store_id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        
+        return response()->json($worker);
+    }
     public function store(Request $request)
     {
         \Log::info("Received request:", $request->all()); // Debugging

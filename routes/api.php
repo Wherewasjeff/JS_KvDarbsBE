@@ -8,12 +8,17 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\WorkerController;
-
+Route::any('/hello', function () {
+    return ['message' => 'Hello from Laravel!'];
+});
 // Public Routes
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::get('/categories', [StorageController::class, 'getCategories']);
 Route::get('/storage', [StorageController::class, 'getStorage']);
+Route::get('/test', function() {
+    return response()->json(['message' => 'API is working']);
+});
 // Routes that require authentication
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -24,6 +29,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::get('/user/{id}', [UserController::class, 'show']);
+    Route::get('/workers/{worker}', [WorkerController::class, 'show']);
     Route::put('/user/{id}', [UserController::class, 'update']);
 
     Route::post('/store', [StoreController::class, 'store']);
@@ -34,11 +40,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/storage', [StorageController::class, 'storage']);
     Route::delete('/storage/{id}', [StorageController::class, 'destroy']);
     Route::post('/categories', [StorageController::class, 'addCategory']);
+    Route::delete('/categories/{id}', [StorageController::class, 'destroyCategory']);
     Route::put('/storage/{id}', [StorageController::class, 'update'])->middleware('auth:sanctum');
+    Route::post('/assign-categories', [StorageController::class, 'assignCategories']);
 
     // Worker Routes
     Route::get('/workers', [WorkerController::class, 'index']);
     Route::post('/workers', [WorkerController::class, 'store']);
     Route::put('/workers/{worker}', [WorkerController::class, 'update']);
     Route::delete('/workers/{worker}', [WorkerController::class, 'destroy']);
+
+    //Selling Routes
+    Route::post('/sell', [\App\Http\Controllers\SaleController::class, 'store']);
+    Route::get('/sales', [\App\Http\Controllers\SaleController::class, 'index']);
 });

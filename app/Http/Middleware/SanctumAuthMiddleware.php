@@ -11,9 +11,9 @@ class SanctumAuthMiddleware
 {
     public function handle(Request $request, Closure $next, ...$guards): Response
     {
-        if (!auth()->guard('sanctum')->check()) {
-            return response()->json(['error' => 'Unauthenticated.'], 401);
-        }
+        if (!$request->user()) {
+    return response()->json(['error' => 'Unauthenticated.'], 401);
+}
 
         return $next($request);
     }

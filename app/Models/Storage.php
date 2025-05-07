@@ -13,6 +13,7 @@ class Storage extends Model
     protected $fillable = [
         'store_id',
         'product_name',
+        'sku',
         'barcode',
         'category_id',
         'price',
@@ -20,11 +21,17 @@ class Storage extends Model
         'storage_num',
         'quantity_in_storage',
         'quantity_in_salesfloor',
+        'should_be',
         'image'
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+    // In app/Models/Storage.php
+    public function sales()
+    {
+        return $this->hasMany(Sale::class, 'product_id');
     }
 }

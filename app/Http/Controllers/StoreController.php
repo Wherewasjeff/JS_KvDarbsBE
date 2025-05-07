@@ -61,11 +61,8 @@ class StoreController extends Controller
 
     public function show($store_id)
     {
-        $store = Store::where('id', $store_id)->with("workingHours")->first();
-        if (!$store) {
-            return response()->json(['message' => 'Store not found'], 404);
-        }
-        return response()->json($store);
+      $store = Store::with('workingHours')->findOrFail($store_id);
+      return response()->json($store);
     }
     public function update(Request $request, $id)
     {

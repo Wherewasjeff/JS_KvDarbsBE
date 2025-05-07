@@ -18,6 +18,8 @@ class Store extends Model
         'category',
         'backroom',
     ];
-    public function workingHours(): HasMany{
-        return $this->hasMany(WorkingHours::class);
-}}
+    public function workinghours()
+    {
+        return $this->hasMany(Workinghours::class);
+    }
+}
